@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Time exposing (..)
 
 
 -- MODEL
@@ -88,6 +89,7 @@ storeItemView storeItem =
 type Msg
     = Click
     | Buy StoreItem
+    | Tick Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -105,6 +107,9 @@ update msg model =
                         thisItem
             in
                 { model | storeItems = List.map buyItem model.storeItems } ! []
+
+        Tick time ->
+            { model | numberOfClicks = model.numberOfClicks + (calculateClicksPerSecond model) } ! []
 
 
 formatNumberOfClicks : Model -> String
@@ -125,7 +130,7 @@ calculateClicksPerSecond model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    every second Tick
 
 
 
