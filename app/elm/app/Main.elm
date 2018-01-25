@@ -23,18 +23,38 @@ model =
     }
 
 
+init : ( Model, Cmd Msg )
+init =
+    ( model, Cmd.none )
+
+
 
 -- VIEW
 
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h2 [] [ text model.name ]
-        , h2 [] [ text (formatNumberOfClicks model) ]
-        , h2 [] [ text (formatClicksPerSecond model) ]
-        , button [ class "cookie-button", onClick Click ] []
+    div [ class "main-container" ]
+        [ div [ class "small-container" ]
+            [ h2 [] [ text model.name ]
+            , h2 [] [ text (formatNumberOfClicks model) ]
+            , h2 [] [ text (formatClicksPerSecond model) ]
+            , button [ class "cookie-button", onClick Click ] []
+            ]
+        , div [ class "small-container" ]
+            [ h2 [] [ text "Store" ]
+            , ul []
+                [ storeItem model
+                , storeItem model
+                , storeItem model
+                ]
+            ]
         ]
+
+
+storeItem : Model -> Html Msg
+storeItem model =
+    li [] [ text "blableee" ]
 
 
 
@@ -45,11 +65,11 @@ type Msg
     = Click
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Click ->
-            { model | numberOfClicks = model.numberOfClicks + 1 }
+            { model | numberOfClicks = model.numberOfClicks + 1 } ! []
 
 
 formatNumberOfClicks : Model -> String
@@ -63,13 +83,23 @@ formatClicksPerSecond model =
 
 
 
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+
 -- PROGRAM
 
 
 main : Program Never Model Msg
 main =
-    Html.beginnerProgram
-        { model = model
+    program
+        { init = init
         , view = view
         , update = update
+        , subscriptions = subscriptions
         }
