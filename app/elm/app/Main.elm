@@ -11,15 +11,7 @@ import Html.Events exposing (onClick)
 type alias Model =
     { name : String
     , numberOfClicks : Int
-    , clicksPerSecond : Int
     , storeItems : List StoreItem
-    }
-
-
-type alias StoreItem =
-    { name : String
-    , price : Int
-    , clicksPerSecond : Int
     }
 
 
@@ -27,8 +19,28 @@ model : Model
 model =
     { name = "Lixosoft Software"
     , numberOfClicks = 0
-    , clicksPerSecond = 0
-    , storeItems = []
+    , storeItems = [ codeMonkeyStoreItem ]
+    }
+
+
+
+-- STORE ITEMS
+
+
+type alias StoreItem =
+    { name : String
+    , price : Int
+    , clicksPerSecond : Int
+    , numberBought : Int
+    }
+
+
+codeMonkeyStoreItem : StoreItem
+codeMonkeyStoreItem =
+    { name = "Code Monkey"
+    , price = 10
+    , clicksPerSecond = 10
+    , numberBought = 0
     }
 
 
@@ -58,8 +70,15 @@ view model =
 
 
 storeItemView : StoreItem -> Html Msg
-storeItemView model =
-    li [] [ text "blableee" ]
+storeItemView storeItem =
+    li [ onClick (Buy storeItem) ]
+        [ div [ class "store-item" ]
+            [ text storeItem.name
+            , text (toString storeItem.price)
+            , text (toString storeItem.clicksPerSecond)
+            , text (toString storeItem.numberBought)
+            ]
+        ]
 
 
 
@@ -68,6 +87,7 @@ storeItemView model =
 
 type Msg
     = Click
+    | Buy StoreItem
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -75,6 +95,16 @@ update msg model =
     case msg of
         Click ->
             { model | numberOfClicks = model.numberOfClicks + 1 } ! []
+
+        Buy storeItem ->
+            let
+                buyItem thisItem =
+                    if thisItem.name == storeItem.name then
+                        { thisItem | numberBought = storeItem.numberBought + 1 }
+                    else
+                        thisItem
+            in
+                { model | storeItems = List.map buyItem model.storeItems } ! []
 
 
 formatNumberOfClicks : Model -> String
@@ -84,11 +114,13 @@ formatNumberOfClicks model =
 
 formatClicksPerSecond : Model -> String
 formatClicksPerSecond model =
-    ("per second: " ++ (toString model.clicksPerSecond))
+    ("per second: " ++ (toString (calculateClicksPerSecond model)))
 
 
-
--- SUBSCRIPTIONS
+calculateClicksPerSecond : Model -> Int
+calculateClicksPerSecond model =
+    List.map (\storeItem -> storeItem.clicksPerSecond * storeItem.numberBought) model.storeItems
+        |> List.sum
 
 
 subscriptions : Model -> Sub Msg
