@@ -77,7 +77,7 @@ view model =
             ]
         , div [ class "small-container" ]
             [ h2 [] [ text "Store" ]
-            , ul [] (List.map storeItemView model.storeItems)
+            , ul [ class "unbulleted-list" ] (List.map storeItemView model.storeItems)
             ]
         ]
 
@@ -86,10 +86,10 @@ storeItemView : StoreItem -> Html Msg
 storeItemView storeItem =
     li [ onClick (Buy storeItem) ]
         [ div [ class "store-item" ]
-            [ text storeItem.name
-            , text (toString storeItem.price)
-            , text (toString storeItem.clicksPerSecond)
-            , text (toString storeItem.numberBought)
+            [ div [] [ text storeItem.name ]
+            , div [] [ text ("price: " ++ (toString storeItem.price)) ]
+            , div [] [ text ("lines per second: " ++ (toString storeItem.clicksPerSecond)) ]
+            , div [] [ text ("acquired: " ++ (toString storeItem.numberBought)) ]
             ]
         ]
 
