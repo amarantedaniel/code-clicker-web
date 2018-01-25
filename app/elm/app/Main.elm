@@ -111,14 +111,23 @@ update msg model =
             { model | numberOfClicks = model.numberOfClicks + 1 } ! []
 
         Buy storeItem ->
-            let
-                buyItem thisItem =
-                    if thisItem.name == storeItem.name then
-                        { thisItem | numberBought = storeItem.numberBought + 1 }
-                    else
-                        thisItem
-            in
-                { model | storeItems = List.map buyItem model.storeItems } ! []
+            if model.numberOfClicks >= storeItem.price then
+                { model
+                    | storeItems =
+                        List.map
+                            (\item ->
+                                if item.name == storeItem.name then
+                                    { item | numberBought = storeItem.numberBought + 1 }
+                                else
+                                    item
+                            )
+                            model.storeItems
+                    , numberOfClicks = model.numberOfClicks - storeItem.price
+                }
+                    ! []
+            else
+                model
+                    ! []
 
         Tick time ->
             { model | numberOfClicks = model.numberOfClicks + (calculateClicksPerSecond model) } ! []
@@ -138,6 +147,10 @@ calculateClicksPerSecond : Model -> Int
 calculateClicksPerSecond model =
     List.map (\storeItem -> storeItem.clicksPerSecond * storeItem.numberBought) model.storeItems
         |> List.sum
+
+
+
+-- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
