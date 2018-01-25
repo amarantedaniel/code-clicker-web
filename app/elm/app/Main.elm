@@ -12,14 +12,23 @@ type alias Model =
     { name : String
     , numberOfClicks : Int
     , clicksPerSecond : Int
+    , storeItems : List StoreItem
+    }
+
+
+type alias StoreItem =
+    { name : String
+    , price : Int
+    , clicksPerSecond : Int
     }
 
 
 model : Model
 model =
-    { name = "Bla"
+    { name = "Lixosoft Software"
     , numberOfClicks = 0
     , clicksPerSecond = 0
+    , storeItems = []
     }
 
 
@@ -43,17 +52,13 @@ view model =
             ]
         , div [ class "small-container" ]
             [ h2 [] [ text "Store" ]
-            , ul []
-                [ storeItem model
-                , storeItem model
-                , storeItem model
-                ]
+            , ul [] (List.map storeItemView model.storeItems)
             ]
         ]
 
 
-storeItem : Model -> Html Msg
-storeItem model =
+storeItemView : StoreItem -> Html Msg
+storeItemView model =
     li [] [ text "blableee" ]
 
 
@@ -74,12 +79,12 @@ update msg model =
 
 formatNumberOfClicks : Model -> String
 formatNumberOfClicks model =
-    ((toString model.numberOfClicks) ++ " cookies")
+    ((toString model.numberOfClicks) ++ " lines of code")
 
 
 formatClicksPerSecond : Model -> String
 formatClicksPerSecond model =
-    ("per Second: " ++ (toString model.clicksPerSecond))
+    ("per second: " ++ (toString model.clicksPerSecond))
 
 
 
