@@ -10,7 +10,7 @@ type alias Model =
 
 type alias StoreItem =
     { name : String
-    , basePrice : Int
+    , currentPrice : Int
     , clicksPerSecond : Int
     , priceMultiplier : Float
     , numberBought : Int

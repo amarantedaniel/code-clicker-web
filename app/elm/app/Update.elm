@@ -25,18 +25,21 @@ update msg model =
             model ! []
 
         Buy storeItem ->
-            if model.numberOfClicks >= storeItem.basePrice then
+            if model.numberOfClicks >= storeItem.currentPrice then
                 { model
                     | storeItems =
                         List.map
                             (\item ->
                                 if item.name == storeItem.name then
-                                    { item | numberBought = storeItem.numberBought + 1 }
+                                    { item
+                                        | numberBought = storeItem.numberBought + 1
+                                        , currentPrice = round ((toFloat storeItem.currentPrice) * storeItem.priceMultiplier)
+                                    }
                                 else
                                     item
                             )
                             model.storeItems
-                    , numberOfClicks = model.numberOfClicks - storeItem.basePrice
+                    , numberOfClicks = model.numberOfClicks - storeItem.currentPrice
                 }
                     ! []
             else
