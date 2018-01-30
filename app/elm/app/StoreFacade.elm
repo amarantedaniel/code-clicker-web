@@ -1,4 +1,4 @@
-module StoreFacade exposing (..)
+module StoreFacade exposing (fetchItems)
 
 import Model exposing (..)
 import Http

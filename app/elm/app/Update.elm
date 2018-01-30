@@ -1,11 +1,13 @@
 module Update exposing (..)
 
+import Http exposing (Error)
 import Model exposing (..)
 import Time exposing (..)
 
 
 type Msg
     = Click
+    | FetchItemsResponse (Result Http.Error (List StoreItem))
     | Buy StoreItem
     | Tick Time
 
@@ -15,6 +17,12 @@ update msg model =
     case msg of
         Click ->
             { model | numberOfClicks = model.numberOfClicks + 1 } ! []
+
+        FetchItemsResponse (Ok items) ->
+            { model | storeItems = items } ! []
+
+        FetchItemsResponse (Err error) ->
+            model ! []
 
         Buy storeItem ->
             if model.numberOfClicks >= storeItem.basePrice then
