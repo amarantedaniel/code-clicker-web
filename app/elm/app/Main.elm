@@ -1,60 +1,10 @@
 module Main exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Model exposing (..)
+import Update exposing (..)
+import View exposing (view)
+import Html exposing (program)
 import Time exposing (..)
-
-
--- MODEL
-
-
-type alias Model =
-    { name : String
-    , numberOfClicks : Int
-    , storeItems : List StoreItem
-    }
-
-
-model : Model
-model =
-    { name = "Lixosoft Software"
-    , numberOfClicks = 0
-    , storeItems =
-        [ codeMonkeyStoreItem
-        , softwareDevStoreItem
-        ]
-    }
-
-
-
--- STORE ITEMS
-
-
-type alias StoreItem =
-    { name : String
-    , price : Int
-    , clicksPerSecond : Int
-    , numberBought : Int
-    }
-
-
-codeMonkeyStoreItem : StoreItem
-codeMonkeyStoreItem =
-    { name = "Code Monkey"
-    , price = 10
-    , clicksPerSecond = 10
-    , numberBought = 0
-    }
-
-
-softwareDevStoreItem : StoreItem
-softwareDevStoreItem =
-    { name = "Proper Software Developer"
-    , price = 50
-    , clicksPerSecond = 50
-    , numberBought = 0
-    }
 
 
 init : ( Model, Cmd Msg )
@@ -62,104 +12,9 @@ init =
     ( model, Cmd.none )
 
 
-
--- VIEW
-
-
-view : Model -> Html Msg
-view model =
-    div [ class "main-container" ]
-        [ div [ class "small-container" ]
-            [ h2 [] [ text model.name ]
-            , h2 [] [ text (formatNumberOfClicks model) ]
-            , h2 [] [ text (formatClicksPerSecond model) ]
-            , button [ class "cookie-button", onClick Click ] []
-            ]
-        , div [ class "small-container" ]
-            [ h2 [] [ text "Store" ]
-            , ul [ class "unbulleted-list" ] (List.map storeItemView model.storeItems)
-            ]
-        ]
-
-
-storeItemView : StoreItem -> Html Msg
-storeItemView storeItem =
-    li [ onClick (Buy storeItem) ]
-        [ div [ class "store-item" ]
-            [ div [] [ text storeItem.name ]
-            , div [] [ text ("price: " ++ (toString storeItem.price)) ]
-            , div [] [ text ("lines per second: " ++ (toString storeItem.clicksPerSecond)) ]
-            , div [] [ text ("acquired: " ++ (toString storeItem.numberBought)) ]
-            ]
-        ]
-
-
-
--- UPDATE
-
-
-type Msg
-    = Click
-    | Buy StoreItem
-    | Tick Time
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        Click ->
-            { model | numberOfClicks = model.numberOfClicks + 1 } ! []
-
-        Buy storeItem ->
-            if model.numberOfClicks >= storeItem.price then
-                { model
-                    | storeItems =
-                        List.map
-                            (\item ->
-                                if item.name == storeItem.name then
-                                    { item | numberBought = storeItem.numberBought + 1 }
-                                else
-                                    item
-                            )
-                            model.storeItems
-                    , numberOfClicks = model.numberOfClicks - storeItem.price
-                }
-                    ! []
-            else
-                model
-                    ! []
-
-        Tick time ->
-            { model | numberOfClicks = model.numberOfClicks + (calculateClicksPerSecond model) } ! []
-
-
-formatNumberOfClicks : Model -> String
-formatNumberOfClicks model =
-    ((toString model.numberOfClicks) ++ " lines of code")
-
-
-formatClicksPerSecond : Model -> String
-formatClicksPerSecond model =
-    ("per second: " ++ (toString (calculateClicksPerSecond model)))
-
-
-calculateClicksPerSecond : Model -> Int
-calculateClicksPerSecond model =
-    List.map (\storeItem -> storeItem.clicksPerSecond * storeItem.numberBought) model.storeItems
-        |> List.sum
-
-
-
--- SUBSCRIPTIONS
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     every second Tick
-
-
-
--- PROGRAM
 
 
 main : Program Never Model Msg
