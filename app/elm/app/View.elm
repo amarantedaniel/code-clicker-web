@@ -28,7 +28,7 @@ storeItemView storeItem =
     li [ onClick (Buy storeItem) ]
         [ div [ class "store-item" ]
             [ div [] [ text storeItem.name ]
-            , div [] [ text ("price: " ++ (toString storeItem.price)) ]
+            , div [] [ text ("price: " ++ (toString storeItem.basePrice)) ]
             , div [] [ text ("lines per second: " ++ (toString storeItem.clicksPerSecond)) ]
             , div [] [ text ("acquired: " ++ (toString storeItem.numberBought)) ]
             ]

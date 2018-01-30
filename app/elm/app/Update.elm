@@ -17,7 +17,7 @@ update msg model =
             { model | numberOfClicks = model.numberOfClicks + 1 } ! []
 
         Buy storeItem ->
-            if model.numberOfClicks >= storeItem.price then
+            if model.numberOfClicks >= storeItem.basePrice then
                 { model
                     | storeItems =
                         List.map
@@ -28,7 +28,7 @@ update msg model =
                                     item
                             )
                             model.storeItems
-                    , numberOfClicks = model.numberOfClicks - storeItem.price
+                    , numberOfClicks = model.numberOfClicks - storeItem.basePrice
                 }
                     ! []
             else
