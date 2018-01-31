@@ -11,7 +11,7 @@ fetchItems msg =
     Http.request
         { method = "GET"
         , headers = []
-        , url = "http://localhost:4000/api/items"
+        , url = "https://morning-ravine-19945.herokuapp.com/api/items"
         , body = Http.emptyBody
         , expect =
             Http.expectStringResponse (\response -> Json.Decode.decodeString itemListDecoder response.body)
