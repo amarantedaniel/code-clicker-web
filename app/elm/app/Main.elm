@@ -48,7 +48,11 @@ update msg model =
             { model | page = page } ! []
 
         GameMsg gameMsg ->
-            { model | game = Game.update gameMsg model.game } ! []
+            let
+                ( gameModel, gameCmd ) =
+                    Game.update gameMsg model.game
+            in
+                ( { model | game = gameModel }, Cmd.map GameMsg gameCmd )
 
 
 

@@ -46,17 +46,17 @@ type Msg
     | Tick Time
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Click ->
-            { model | numberOfClicks = model.numberOfClicks + 1 }
+            { model | numberOfClicks = model.numberOfClicks + 1 } ! []
 
         FetchItemsResponse (Ok items) ->
-            { model | storeItems = items }
+            { model | storeItems = items } ! []
 
         FetchItemsResponse (Err error) ->
-            model
+            model ! []
 
         Buy storeItem ->
             if model.numberOfClicks >= storeItem.currentPrice then
@@ -75,11 +75,12 @@ update msg model =
                             model.storeItems
                     , numberOfClicks = model.numberOfClicks - storeItem.currentPrice
                 }
+                    ! []
             else
-                model
+                model ! []
 
         Tick time ->
-            { model | numberOfClicks = model.numberOfClicks + (calculateClicksPerSecond model) }
+            { model | numberOfClicks = model.numberOfClicks + (calculateClicksPerSecond model) } ! []
 
 
 calculateClicksPerSecond : Model -> Int
