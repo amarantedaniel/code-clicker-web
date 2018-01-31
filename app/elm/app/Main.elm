@@ -1,9 +1,9 @@
 module Main exposing (..)
 
-import Model exposing (..)
-import Update exposing (..)
+import Game.Model exposing (..)
+import Game.Update exposing (..)
 import StoreFacade exposing (fetchItems)
-import View exposing (view)
+import Game.View exposing (view)
 import Html exposing (program)
 import Time exposing (..)
 

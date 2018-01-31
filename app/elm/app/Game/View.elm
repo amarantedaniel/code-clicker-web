@@ -1,7 +1,7 @@
-module View exposing (..)
+module Game.View exposing (..)
 
-import Model exposing (..)
-import Update exposing (..)
+import Game.Model exposing (..)
+import Game.Update exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)

@@ -1,6 +1,6 @@
 module StoreFacade exposing (fetchItems)
 
-import Model exposing (..)
+import Game.Model exposing (..)
 import Http
 import Json.Decode exposing (Decoder, list, string, float, int)
 import Json.Decode.Pipeline exposing (decode, required, hardcoded)

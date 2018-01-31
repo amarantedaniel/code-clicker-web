@@ -1,4 +1,4 @@
-module Model exposing (..)
+module Game.Model exposing (..)
 
 
 type alias Model =

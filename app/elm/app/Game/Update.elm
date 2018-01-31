@@ -1,7 +1,7 @@
-module Update exposing (..)
+module Game.Update exposing (..)
 
 import Http exposing (Error)
-import Model exposing (..)
+import Game.Model exposing (..)
 import Time exposing (..)
 
 
