@@ -1,4 +1,4 @@
-module StoreFacade exposing (fetchItems)
+module Facade.Store exposing (fetchItems)
 
 import Game.Model exposing (StoreItem)
 import Http

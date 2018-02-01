@@ -3,7 +3,7 @@ module Game.Update exposing (..)
 import Http exposing (Error)
 import Game.Model exposing (..)
 import Time exposing (..)
-import StoreFacade exposing (fetchItems)
+import Facade.Store exposing (fetchItems)
 
 
 type Msg
@@ -58,7 +58,7 @@ calculateClicksPerSecond model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, StoreFacade.fetchItems FetchItemsResponse )
+    ( initialModel, Facade.Store.fetchItems FetchItemsResponse )
 
 
 subscriptions : Model -> Sub Msg
