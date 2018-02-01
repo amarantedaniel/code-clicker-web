@@ -101,9 +101,14 @@ view model =
             , h2 [] [ text (formatNumberOfClicks model) ]
             , h2 [] [ text (formatClicksPerSecond model) ]
             , button [ class "cookie-button", onClick Click ] []
+            , h2 [ classList [ ( "hidden", model.numberOfClicks > 0 ) ] ] [ text "Touch the terminal to start coding" ]
             ]
         , div []
-            [ img [ src "https://i.imgur.com/iVHfwLc.gif" ] []
+            [ img
+                [ classList [ ( "hidden", model.numberOfClicks == 0 ) ]
+                , src "https://i.imgur.com/iVHfwLc.gif"
+                ]
+                []
             ]
         , div [ class "small-container" ]
             [ h2 [] [ text "Store" ]
