@@ -28,7 +28,16 @@ update msg model =
             ( model, Cmd.none )
 
         SignupResponse (Err err) ->
-            ( { model | error = Just (toString err) }, Cmd.none )
+            let
+                errorMessage =
+                    case err of
+                        Http.BadStatus response ->
+                            response.status.message
+
+                        _ ->
+                            "Sign Up Error"
+            in
+                ( { model | error = Just errorMessage }, Cmd.none )
 
 
 init : ( Model, Cmd Msg )
