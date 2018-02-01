@@ -1,9 +1,10 @@
 module Main exposing (..)
 
--- import StoreFacade exposing (fetchItems)
 -- import Time exposing (..)
 
-import Game
+import Game.Model
+import Game.Update
+import Game.View
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
@@ -19,7 +20,7 @@ type Page
 
 type alias Model =
     { page : Page
-    , game : Game.Model
+    , game : Game.Model.Model
     , login : String
     }
 
@@ -27,7 +28,7 @@ type alias Model =
 initialModel : Model
 initialModel =
     { page = GamePage
-    , game = Game.initialModel
+    , game = Game.Model.initialModel
     , login = ""
     }
 
@@ -38,7 +39,7 @@ initialModel =
 
 type Msg
     = ChangePage Page
-    | GameMsg Game.Msg
+    | GameMsg Game.Update.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -50,7 +51,7 @@ update msg model =
         GameMsg gameMsg ->
             let
                 ( gameModel, gameCmd ) =
-                    Game.update gameMsg model.game
+                    Game.Update.update gameMsg model.game
             in
                 ( { model | game = gameModel }, Cmd.map GameMsg gameCmd )
 
@@ -65,7 +66,7 @@ view model =
         page =
             case model.page of
                 GamePage ->
-                    Html.map GameMsg (Game.view model.game)
+                    Html.map GameMsg (Game.View.view model.game)
 
                 LoginPage ->
                     Html.text "Login"
