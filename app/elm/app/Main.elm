@@ -1,10 +1,12 @@
 module Main exposing (..)
 
+-- import Time exposing (..)
+
 import Game.Model
 import Game.Update
 import Game.View
 import Html exposing (..)
-import Html.Events exposing (..)
+import Html.Attributes exposing (..)
 import Navigation
 
 
@@ -28,17 +30,13 @@ type alias Model =
 
 
 type Msg
-    = Navigate Page
-    | ChangePage Page
+    = ChangePage Page
     | GameMsg Game.Update.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Navigate page ->
-            ( model, Navigation.newUrl (pageToHash page) )
-
         ChangePage page ->
             { model | page = page } ! []
 
@@ -68,13 +66,11 @@ view model =
         div []
             [ div []
                 [ a
-                    [ onClick (Navigate LoginPage)
-                    ]
+                    [ href "#/login" ]
                     [ text "Login" ]
                 , span [] [ text " | " ]
                 , a
-                    [ onClick (Navigate GamePage)
-                    ]
+                    [ href "#" ]
                     [ text "Game" ]
                 ]
             , hr [] []
