@@ -3,6 +3,7 @@ module Game.Update exposing (..)
 import Http exposing (Error)
 import Game.Model exposing (..)
 import Time exposing (..)
+import StoreFacade exposing (fetchItems)
 
 
 type Msg
@@ -53,3 +54,13 @@ calculateClicksPerSecond : Model -> Int
 calculateClicksPerSecond model =
     List.map (\storeItem -> storeItem.clicksPerSecond * storeItem.numberBought) model.storeItems
         |> List.sum
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( initialModel, StoreFacade.fetchItems FetchItemsResponse )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    every second Tick

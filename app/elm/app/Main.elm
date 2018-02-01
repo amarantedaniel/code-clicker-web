@@ -1,13 +1,11 @@
 module Main exposing (..)
 
--- import Time exposing (..)
-
 import Game.Model
 import Game.Update
 import Game.View
 import Html exposing (..)
 import Html.Events exposing (..)
-import Html.Attributes exposing (..)
+import Navigation
 
 
 -- MODEL --
@@ -25,26 +23,22 @@ type alias Model =
     }
 
 
-initialModel : Model
-initialModel =
-    { page = GamePage
-    , game = Game.Model.initialModel
-    , login = ""
-    }
-
-
 
 -- UPDATE --
 
 
 type Msg
-    = ChangePage Page
+    = Navigate Page
+    | ChangePage Page
     | GameMsg Game.Update.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Navigate page ->
+            ( model, Navigation.newUrl (pageToHash page) )
+
         ChangePage page ->
             { model | page = page } ! []
 
@@ -74,14 +68,12 @@ view model =
         div []
             [ div []
                 [ a
-                    [ href "#"
-                    , onClick (ChangePage LoginPage)
+                    [ onClick (Navigate LoginPage)
                     ]
                     [ text "Login" ]
                 , span [] [ text " | " ]
                 , a
-                    [ href "#"
-                    , onClick (ChangePage GamePage)
+                    [ onClick (Navigate GamePage)
                     ]
                     [ text "Game" ]
                 ]
@@ -90,30 +82,67 @@ view model =
             ]
 
 
+main : Program Never Model Msg
+main =
+    Navigation.program locationToMsg
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }
 
--- TODO: add initial command
+
+locationToMsg : Navigation.Location -> Msg
+locationToMsg location =
+    location.hash
+        |> hashToPage
+        |> ChangePage
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, Cmd.none )
+hashToPage : String -> Page
+hashToPage hash =
+    case hash of
+        "#/login" ->
+            LoginPage
+
+        _ ->
+            GamePage
 
 
+pageToHash : Page -> String
+pageToHash page =
+    case page of
+        LoginPage ->
+            "#/login"
 
--- TODO: add back ticks
--- every second Tick
+        GamePage ->
+            "#/"
+
+
+init : Navigation.Location -> ( Model, Cmd Msg )
+init location =
+    let
+        page =
+            hashToPage location.hash
+
+        ( gameModel, gameCmd ) =
+            Game.Update.init
+
+        initialModel =
+            { page = page
+            , game = gameModel
+            , login = ""
+            }
+
+        cmds =
+            Cmd.batch
+                [ Cmd.map GameMsg gameCmd
+                ]
+    in
+        ( initialModel, cmds )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
-
-
-main : Program Never Model Msg
-main =
-    program
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
+    Sub.batch
+        [ Sub.map GameMsg (Game.Update.subscriptions model.game) ]
