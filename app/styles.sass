@@ -1,21 +1,26 @@
 $hacker-green: rgb(30, 197, 3)
-
+$black: rgb(0, 0, 0)
 
 html
-  background-color: black
-  margin: 0
-  text-align: center
-  color: $hacker-green
+	background-color: $black
+	margin: 0
+	text-align: center
+	color: $hacker-green
+
+a
+	color: $hacker-green
 
 .main-container
 	display: flex
 	justify-content: space-around
 
 .store-item
-	margin: 30px 30px
+	margin: 30px
+	padding: 10px
+	border: solid
 
 .cookie-button
-	background: url(http://linuxcommand.org/images/Screenshot-Terminal.png)
+	background: url('http://linuxcommand.org/images/Screenshot-Terminal.png')
 	width: 200px
 	height: 200px
 
@@ -24,3 +29,8 @@ html
 
 .hidden
 	visibility: hidden
+
+.links-menu
+	display: flex
+	justify-content: space-between
+	margin: 10px

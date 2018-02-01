@@ -64,14 +64,20 @@ view model =
                     Html.text "Login"
     in
         div []
-            [ div []
+            [ div [ class "links-menu" ]
                 [ a
-                    [ href "#/login" ]
-                    [ text "Login" ]
-                , span [] [ text " | " ]
-                , a
                     [ href "#" ]
-                    [ text "Game" ]
+                    [ text "Code Clicker" ]
+                , div
+                    []
+                    [ a
+                        [ href "#/login" ]
+                        [ text "Sign Up" ]
+                    , span [] [ text " | " ]
+                    , a
+                        [ href "#/login" ]
+                        [ text "Login" ]
+                    ]
                 ]
             , hr [] []
             , page
