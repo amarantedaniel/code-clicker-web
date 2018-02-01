@@ -6,6 +6,9 @@ import Game.View
 import Login.Model
 import Login.Update
 import Login.View
+import SignUp.Model
+import SignUp.Update
+import SignUp.View
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Navigation
@@ -17,12 +20,14 @@ import Navigation
 type Page
     = GamePage
     | LoginPage
+    | SignUpPage
 
 
 type alias Model =
     { page : Page
     , game : Game.Model.Model
     , login : Login.Model.Model
+    , signUp : SignUp.Model.Model
     }
 
 
@@ -34,6 +39,7 @@ type Msg
     = ChangePage Page
     | GameMsg Game.Update.Msg
     | LoginMsg Login.Update.Msg
+    | SignUpMsg SignUp.Update.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -56,6 +62,13 @@ update msg model =
             in
                 ( { model | login = loginModel }, Cmd.map LoginMsg loginCmd )
 
+        SignUpMsg signUpMsg ->
+            let
+                ( signUpModel, signUpCmd ) =
+                    SignUp.Update.update signUpMsg model.signUp
+            in
+                ( { model | signUp = signUpModel }, Cmd.map SignUpMsg signUpCmd )
+
 
 
 -- VIEW --
@@ -71,6 +84,9 @@ view model =
 
                 LoginPage ->
                     Html.map LoginMsg (Login.View.view model.login)
+
+                SignUpPage ->
+                    Html.map SignUpMsg (SignUp.View.view model.signUp)
     in
         div []
             [ div [ class "links-menu" ]
@@ -80,7 +96,7 @@ view model =
                 , div
                     []
                     [ a
-                        [ href "#/login" ]
+                        [ href "#/sign_up" ]
                         [ text "Sign Up" ]
                     , span [] [ text " | " ]
                     , a
@@ -116,6 +132,9 @@ hashToPage hash =
         "#/login" ->
             LoginPage
 
+        "#/sign_up" ->
+            SignUpPage
+
         _ ->
             GamePage
 
@@ -128,6 +147,9 @@ pageToHash page =
 
         GamePage ->
             "#/"
+
+        SignUpPage ->
+            "#/sign_up"
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -142,16 +164,21 @@ init location =
         ( loginModel, loginCmd ) =
             Login.Update.init
 
+        ( signUpModel, signUpCmd ) =
+            SignUp.Update.init
+
         initialModel =
             { page = page
             , game = gameModel
             , login = loginModel
+            , signUp = signUpModel
             }
 
         cmds =
             Cmd.batch
                 [ Cmd.map GameMsg gameCmd
                 , Cmd.map LoginMsg loginCmd
+                , Cmd.map SignUpMsg signUpCmd
                 ]
     in
         ( initialModel, cmds )
