@@ -102,6 +102,9 @@ view model =
             , h2 [] [ text (formatClicksPerSecond model) ]
             , button [ class "cookie-button", onClick Click ] []
             ]
+        , div []
+            [ img [ src "https://i.imgur.com/iVHfwLc.gif" ] []
+            ]
         , div [ class "small-container" ]
             [ h2 [] [ text "Store" ]
             , ul [ class "unbulleted-list" ] (List.map storeItemView model.storeItems)
