@@ -28,7 +28,7 @@ update msg model =
             ( model, Cmd.none )
 
         SignupResponse (Err err) ->
-            ( model, Cmd.none )
+            ( { model | error = Just (toString err) }, Cmd.none )
 
 
 init : ( Model, Cmd Msg )
