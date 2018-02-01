@@ -1,10 +1,11 @@
 module Main exposing (..)
 
--- import Time exposing (..)
-
 import Game.Model
 import Game.Update
 import Game.View
+import Login.Model
+import Login.Update
+import Login.View
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Navigation
@@ -21,7 +22,7 @@ type Page
 type alias Model =
     { page : Page
     , game : Game.Model.Model
-    , login : String
+    , login : Login.Model.Model
     }
 
 
@@ -32,13 +33,14 @@ type alias Model =
 type Msg
     = ChangePage Page
     | GameMsg Game.Update.Msg
+    | LoginMsg Login.Update.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangePage page ->
-            { model | page = page } ! []
+            ( { model | page = page }, Cmd.none )
 
         GameMsg gameMsg ->
             let
@@ -46,6 +48,13 @@ update msg model =
                     Game.Update.update gameMsg model.game
             in
                 ( { model | game = gameModel }, Cmd.map GameMsg gameCmd )
+
+        LoginMsg loginMsg ->
+            let
+                ( loginModel, loginCmd ) =
+                    Login.Update.update loginMsg model.login
+            in
+                ( { model | login = loginModel }, Cmd.map LoginMsg loginCmd )
 
 
 
@@ -61,7 +70,7 @@ view model =
                     Html.map GameMsg (Game.View.view model.game)
 
                 LoginPage ->
-                    Html.text "Login"
+                    Html.map LoginMsg (Login.View.view model.login)
     in
         div []
             [ div [ class "links-menu" ]
@@ -130,15 +139,19 @@ init location =
         ( gameModel, gameCmd ) =
             Game.Update.init
 
+        ( loginModel, loginCmd ) =
+            Login.Update.init
+
         initialModel =
             { page = page
             , game = gameModel
-            , login = ""
+            , login = loginModel
             }
 
         cmds =
             Cmd.batch
                 [ Cmd.map GameMsg gameCmd
+                , Cmd.map LoginMsg loginCmd
                 ]
     in
         ( initialModel, cmds )
