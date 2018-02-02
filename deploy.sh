@@ -1,9 +1,10 @@
 #!/bin/sh
 
 npm run build
-g branch -D gh-pages
-g co -b gh-pages
+git push origin :gh-pages  
+git branch -D gh-pages
+git checkout -b gh-pages
 mv public/* .
-g add .
-g commit -m "deploy"
-g pb
+git add .
+git commit -m "deploy"
+git push -u origin gh-pages
