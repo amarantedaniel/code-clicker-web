@@ -1,10 +1,9 @@
 #!/bin/sh
 
-npm run build
-git push origin :gh-pages  
-git branch -D gh-pages
-git checkout -b gh-pages
-mv public/* .
+echo "Deploying!"
+npm run prod
+cd public
+git init
 git add .
-git commit -m "deploy"
-git push -u origin gh-pages
+git commit -m "Deploy at $(date)."
+git push --force origin gh-pages
