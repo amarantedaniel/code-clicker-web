@@ -28,6 +28,8 @@ type alias Model =
     , game : Game.Model.Model
     , login : Login.Model.Model
     , signUp : SignUp.Model.Model
+    , token : Maybe String
+    , loggedIn : Bool
     }
 
 
@@ -64,10 +66,16 @@ update msg model =
 
         SignUpMsg signUpMsg ->
             let
-                ( signUpModel, signUpCmd ) =
+                ( signUpModel, signUpCmd, token ) =
                     SignUp.Update.update signUpMsg model.signUp
             in
-                ( { model | signUp = signUpModel }, Cmd.map SignUpMsg signUpCmd )
+                ( { model
+                    | signUp = signUpModel
+                    , token = token
+                    , loggedIn = token /= Nothing
+                  }
+                , Cmd.map SignUpMsg signUpCmd
+                )
 
 
 
@@ -172,6 +180,8 @@ init location =
             , game = gameModel
             , login = loginModel
             , signUp = signUpModel
+            , token = Nothing
+            , loggedIn = False
             }
 
         cmds =
