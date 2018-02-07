@@ -16,5 +16,8 @@
 	<script>
 		var node = document.getElementById('main');
 		var app = Elm.Main.embed(node);
+		app.ports.saveToken.subscribe(function (token) {
+			localStorage.setItem('token', token);
+		});
 	</script>
 </body>

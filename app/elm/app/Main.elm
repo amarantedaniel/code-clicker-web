@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Game.Model
 import Game.Update
@@ -61,26 +61,45 @@ update msg model =
             let
                 ( loginModel, loginCmd, token ) =
                     Login.Update.update loginMsg model.login
+
+                saveTokenCmd =
+                    case token of
+                        Just jwt ->
+                            saveToken jwt
+
+                        Nothing ->
+                            Cmd.none
             in
                 ( { model
                     | login = loginModel
                     , token = token
                     , loggedIn = token /= Nothing
                   }
-                , Cmd.map LoginMsg loginCmd
+                , Cmd.batch
+                    [ Cmd.map LoginMsg loginCmd
+                    , saveTokenCmd
+                    ]
                 )
 
         SignUpMsg signUpMsg ->
             let
                 ( signUpModel, signUpCmd, token ) =
                     SignUp.Update.update signUpMsg model.signUp
+
+                saveTokenCmd =
+                    case token of
+                        Just jwt ->
+                            saveToken jwt
+
+                        Nothing ->
+                            Cmd.none
             in
                 ( { model
                     | signUp = signUpModel
                     , token = token
                     , loggedIn = token /= Nothing
                   }
-                , Cmd.map SignUpMsg signUpCmd
+                , Cmd.batch [ Cmd.map SignUpMsg signUpCmd, saveTokenCmd ]
                 )
 
 
@@ -204,3 +223,6 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Sub.map GameMsg (Game.Update.subscriptions model.game) ]
+
+
+port saveToken : String -> Cmd msg
