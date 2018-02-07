@@ -10,7 +10,7 @@ signUp username password msg =
     Http.request
         { method = "POST"
         , headers = []
-        , url = "http://localhost:4000/api/sign_up"
+        , url = "http://localhost:4000/api/users/signup"
         , body = encodeCredentials username password
         , expect =
             Http.expectStringResponse (\response -> Json.Decode.decodeString tokenDecoder response.body)
@@ -32,4 +32,4 @@ encodeCredentials username password =
 
 tokenDecoder : Json.Decode.Decoder String
 tokenDecoder =
-    Json.Decode.at [ "auth_token" ] Json.Decode.string
+    Json.Decode.at [ "token" ] Json.Decode.string

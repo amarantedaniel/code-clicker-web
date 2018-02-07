@@ -25,7 +25,7 @@ update msg model =
             ( model, Facade.User.signUp model.username model.password SignupResponse )
 
         SignupResponse (Ok token) ->
-            ( model, Cmd.none )
+            ( { model | error = Just token }, Cmd.none )
 
         SignupResponse (Err err) ->
             let
