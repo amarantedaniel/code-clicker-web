@@ -59,10 +59,16 @@ update msg model =
 
         LoginMsg loginMsg ->
             let
-                ( loginModel, loginCmd ) =
+                ( loginModel, loginCmd, token ) =
                     Login.Update.update loginMsg model.login
             in
-                ( { model | login = loginModel }, Cmd.map LoginMsg loginCmd )
+                ( { model
+                    | login = loginModel
+                    , token = token
+                    , loggedIn = token /= Nothing
+                  }
+                , Cmd.map LoginMsg loginCmd
+                )
 
         SignUpMsg signUpMsg ->
             let

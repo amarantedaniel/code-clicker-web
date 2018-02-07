@@ -20,6 +20,21 @@ signUp username password msg =
         |> Http.send msg
 
 
+login : String -> String -> (Result Http.Error String -> msg) -> Cmd msg
+login username password msg =
+    Http.request
+        { method = "POST"
+        , headers = []
+        , url = "http://localhost:4000/api/users/login"
+        , body = encodeCredentials username password
+        , expect =
+            Http.expectStringResponse (\response -> Json.Decode.decodeString tokenDecoder response.body)
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send msg
+
+
 encodeCredentials : String -> String -> Http.Body
 encodeCredentials username password =
     Json.Encode.object

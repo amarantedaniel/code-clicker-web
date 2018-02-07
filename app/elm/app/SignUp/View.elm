@@ -13,6 +13,6 @@ view model =
         [ h1 [] [ text "SIGN UP" ]
         , input [ class "login-view-item", placeholder "Username", value model.username, onInput OnUsernameInput ] []
         , input [ class "login-view-item", placeholder "Password", value model.password, onInput OnPasswordInput ] []
-        , button [ class "login-view-item", onClick SignupButtonClicked ] [ text "Login" ]
+        , button [ class "login-view-item", onClick SignupButtonClicked ] [ text "Sign Up" ]
         , div [ classList [ ( "error-view", True ), ( "hidden", model.error == Nothing ) ] ] [ text (Maybe.withDefault "" model.error) ]
         ]
