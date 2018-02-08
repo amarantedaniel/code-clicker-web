@@ -40,7 +40,7 @@ save : String -> (Result Http.Error () -> msg) -> Cmd msg
 save token msg =
     Http.request
         { method = "POST"
-        , headers = [ Http.header "Authorization" ("Bearer " ++ token) ]
+        , headers = [ Http.header "Authorization" (token) ]
         , url = "http://localhost:4000/api/users/save"
         , body = Http.emptyBody
         , expect =
