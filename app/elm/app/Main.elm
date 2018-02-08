@@ -33,6 +33,11 @@ type alias Model =
     }
 
 
+type alias Flags =
+    { token : Maybe String
+    }
+
+
 
 -- UPDATE --
 
@@ -126,25 +131,34 @@ view model =
                 [ a
                     [ href "#" ]
                     [ text "Code Clicker" ]
-                , div
-                    []
-                    [ a
-                        [ href "#/sign_up" ]
-                        [ text "Sign Up" ]
-                    , span [] [ text " | " ]
-                    , a
-                        [ href "#/login" ]
-                        [ text "Login" ]
-                    ]
+                , rightMenu model
                 ]
             , hr [] []
             , page
             ]
 
 
-main : Program Never Model Msg
+rightMenu : Model -> Html Msg
+rightMenu model =
+    case model.loggedIn of
+        False ->
+            div []
+                [ a
+                    [ href "#/sign_up" ]
+                    [ text "Sign Up" ]
+                , span [] [ text " | " ]
+                , a
+                    [ href "#/login" ]
+                    [ text "Login" ]
+                ]
+
+        True ->
+            div [] []
+
+
+main : Program Flags Model Msg
 main =
-    Navigation.program locationToMsg
+    Navigation.programWithFlags locationToMsg
         { init = init
         , update = update
         , view = view
@@ -185,8 +199,8 @@ pageToHash page =
             "#/sign_up"
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
+init flags location =
     let
         page =
             hashToPage location.hash
@@ -205,8 +219,8 @@ init location =
             , game = gameModel
             , login = loginModel
             , signUp = signUpModel
-            , token = Nothing
-            , loggedIn = False
+            , token = flags.token
+            , loggedIn = flags.token /= Nothing
             }
 
         cmds =

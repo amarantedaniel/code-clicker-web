@@ -14,8 +14,9 @@
 	<div id="main"></div>
 	<script src="js/main.js"></script>
 	<script>
+		var token = localStorage.getItem('token');
 		var node = document.getElementById('main');
-		var app = Elm.Main.embed(node);
+		var app = Elm.Main.embed(node, { token: token });
 		app.ports.saveToken.subscribe(function (token) {
 			localStorage.setItem('token', token);
 		});
