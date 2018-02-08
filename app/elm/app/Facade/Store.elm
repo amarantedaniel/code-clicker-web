@@ -1,4 +1,4 @@
-module Facade.Store exposing (fetchItems)
+module Facade.Store exposing (fetchItems, save)
 
 import Game.Model exposing (StoreItem)
 import Http
@@ -34,3 +34,18 @@ itemDecoder =
         |> required "clicks_per_second" int
         |> required "price_multiplier" float
         |> hardcoded 0
+
+
+save : String -> (Result Http.Error () -> msg) -> Cmd msg
+save token msg =
+    Http.request
+        { method = "POST"
+        , headers = [ Http.header "Authorization" ("Bearer " ++ token) ]
+        , url = "http://localhost:4000/api/users/save"
+        , body = Http.emptyBody
+        , expect =
+            Http.expectStringResponse (\_ -> Ok ())
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send msg

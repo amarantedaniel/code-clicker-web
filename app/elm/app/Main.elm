@@ -58,7 +58,7 @@ update msg model =
         GameMsg gameMsg ->
             let
                 ( gameModel, gameCmd ) =
-                    Game.Update.update gameMsg model.game
+                    Game.Update.update (Maybe.withDefault "" model.token) gameMsg model.game
             in
                 ( { model | game = gameModel }, Cmd.map GameMsg gameCmd )
 
