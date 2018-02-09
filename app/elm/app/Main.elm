@@ -52,6 +52,7 @@ type Msg
     | SignUpMsg SignUp.Update.Msg
     | SaveProgress
     | SaveResponse (Result Http.Error ())
+    | MeResponse (Result Http.Error Facade.User.MeResponse)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -113,13 +114,26 @@ update msg model =
                 )
 
         SaveProgress ->
-            ( model, Facade.User.save (Maybe.withDefault "" model.token) SaveResponse )
+            ( model, Facade.User.save (Maybe.withDefault "" model.token) model.game.numberOfClicks SaveResponse )
 
         SaveResponse (Ok _) ->
-            model ! []
+            ( model, Cmd.none )
 
         SaveResponse (Err error) ->
-            model ! []
+            ( model, Cmd.none )
+
+        MeResponse (Ok response) ->
+            let
+                gameModel =
+                    model.game
+
+                updatedGameModel =
+                    { gameModel | numberOfClicks = response.numberOfClicks }
+            in
+                ( { model | game = updatedGameModel }, Cmd.none )
+
+        MeResponse (Err error) ->
+            ( model, Cmd.none )
 
 
 
@@ -246,6 +260,7 @@ init flags location =
                 [ Cmd.map GameMsg gameCmd
                 , Cmd.map LoginMsg loginCmd
                 , Cmd.map SignUpMsg signUpCmd
+                , Facade.User.me (Maybe.withDefault "" flags.token) MeResponse
                 ]
     in
         ( initialModel, cmds )
