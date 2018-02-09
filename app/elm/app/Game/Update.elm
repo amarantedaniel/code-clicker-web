@@ -3,7 +3,7 @@ module Game.Update exposing (..)
 import Http exposing (Error)
 import Game.Model exposing (..)
 import Time exposing (..)
-import Facade.Store exposing (fetchItems, save)
+import Facade.Store exposing (fetchItems)
 
 
 type Msg
@@ -11,8 +11,6 @@ type Msg
     | FetchItemsResponse (Result Http.Error (List StoreItem))
     | Buy StoreItem
     | Tick Time
-    | Save
-    | SaveResponse (Result Http.Error ())
 
 
 update : String -> Msg -> Model -> ( Model, Cmd Msg )
@@ -50,15 +48,6 @@ update token msg model =
 
         Tick time ->
             { model | numberOfClicks = model.numberOfClicks + (calculateClicksPerSecond model) } ! []
-
-        Save ->
-            ( model, Facade.Store.save token SaveResponse )
-
-        SaveResponse (Ok _) ->
-            model ! []
-
-        SaveResponse (Err error) ->
-            model ! []
 
 
 calculateClicksPerSecond : Model -> Int

@@ -23,7 +23,6 @@ view model =
                 , src "https://i.imgur.com/iVHfwLc.gif"
                 ]
                 []
-            , button [ onClick Save ] [ text "Click here to savers" ]
             ]
         , div [ class "small-container" ]
             [ h2 [] [ text "Store" ]

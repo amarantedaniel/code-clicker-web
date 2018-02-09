@@ -12,6 +12,9 @@ import SignUp.View
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Navigation
+import Html.Events exposing (onClick)
+import Http
+import Facade.User
 
 
 -- MODEL --
@@ -47,6 +50,8 @@ type Msg
     | GameMsg Game.Update.Msg
     | LoginMsg Login.Update.Msg
     | SignUpMsg SignUp.Update.Msg
+    | SaveProgress
+    | SaveResponse (Result Http.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -107,6 +112,15 @@ update msg model =
                 , Cmd.batch [ Cmd.map SignUpMsg signUpCmd, saveTokenCmd ]
                 )
 
+        SaveProgress ->
+            ( model, Facade.User.save (Maybe.withDefault "" model.token) SaveResponse )
+
+        SaveResponse (Ok _) ->
+            model ! []
+
+        SaveResponse (Err error) ->
+            model ! []
+
 
 
 -- VIEW --
@@ -153,7 +167,11 @@ rightMenu model =
                 ]
 
         True ->
-            div [] []
+            div []
+                [ a
+                    [ onClick SaveProgress, href "#" ]
+                    [ text "Save Progress" ]
+                ]
 
 
 main : Program Flags Model Msg

@@ -48,3 +48,18 @@ encodeCredentials username password =
 tokenDecoder : Json.Decode.Decoder String
 tokenDecoder =
     Json.Decode.at [ "token" ] Json.Decode.string
+
+
+save : String -> (Result Http.Error () -> msg) -> Cmd msg
+save token msg =
+    Http.request
+        { method = "POST"
+        , headers = [ Http.header "Authorization" (token) ]
+        , url = "http://localhost:4000/api/users/save"
+        , body = Http.emptyBody
+        , expect =
+            Http.expectStringResponse (\_ -> Ok ())
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> Http.send msg
